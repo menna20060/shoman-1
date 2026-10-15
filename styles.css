@@ -532,6 +532,7 @@ html.ov-open body{overflow:hidden}
 .lbx.on .box{opacity:1;transform:none}
 .lbx .art{aspect-ratio:16/9}
 .lbx .art svg{width:100%;height:100%;display:block}
+.lbx .art img{width:100%;height:100%;display:block;object-fit:cover}
 .lbx .mc{padding:18px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .lbx #lb-t{font-size:20px;font-weight:500}
 .lbx #lb-m{font-size:14px;color:var(--lav2);margin-top:4px}

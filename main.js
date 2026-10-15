@@ -217,7 +217,16 @@
       const i = Number(card.getAttribute('data-proj'));
       const p = D.projects[i];
       if (!p) return;
-      $('#lb-a').innerHTML = D.scenes[D.sceneOf[card.getAttribute('data-sector')] || 0];
+      const projectImage = $('.seat img', card);
+      $('#lb-a').replaceChildren();
+      if (projectImage) {
+        const image = projectImage.cloneNode();
+        image.removeAttribute('loading');
+        image.alt = p.title;
+        $('#lb-a').appendChild(image);
+      } else {
+        $('#lb-a').innerHTML = D.scenes[D.sceneOf[card.getAttribute('data-sector')] || 0];
+      }
       $('#lb-t').textContent = p.title;
       $('#lb-m').textContent = p.meta;
       openOv(lbx, '.xb');
