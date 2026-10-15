@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فحص الفيديوهات</title>
+<style>
+body{background:#000;color:#fff;font-family:system-ui,'Segoe UI',Tahoma,sans-serif;max-width:46rem;margin:0 auto;padding:2.5rem 1.25rem;line-height:1.7}
+h1{font-size:1.5rem;font-weight:600}p{color:rgba(255,255,255,.7)}
+.r{border:1px solid rgba(255,255,255,.18);border-radius:1rem;padding:1rem 1.25rem;margin-top:1rem}
+.r b{display:block;direction:ltr;text-align:right}.ok{color:#6ee7a0}.no{color:#ff8a8a}.w{color:#ffd37a}
+video{width:100%;border-radius:.75rem;margin-top:.75rem;background:#111;max-height:14rem}code{direction:ltr;unicode-bidi:embed;background:rgba(255,255,255,.1);padding:.1rem .4rem;border-radius:.4rem}
+</style>
+</head>
+<body>
+<h1>فحص ملفات الفيديو</h1>
+<p>الصفحة دي بتشوف لو الفيديوهات مرفوعة في المكان الصح على الموقع. الرابط الحالي: <code id="u"></code></p>
+<div id="out"></div>
+<script>
+document.getElementById('u').textContent=location.href;
+var files=['hero.mp4','freedom.mp4'],out=document.getElementById('out');
+files.forEach(function(f){
+  var box=document.createElement('div');box.className='r';box.innerHTML='<b>'+f+'</b><span>جاري الفحص...</span>';out.appendChild(box);
+  var span=box.querySelector('span'),abs=new URL(f,location.href).href;
+  fetch(abs,{headers:{Range:'bytes=0-1023'}}).then(function(r){
+    var type=r.headers.get('content-type')||'';
+    if(r.status===404){span.className='no';span.innerHTML='❌ غير موجود (404). الملف مش مرفوع هنا، أو ملف الفيديو في مكان غلط. لازم يبقى جنب <code>index.html</code>.';return}
+    if(r.status!==200&&r.status!==206){span.className='no';span.textContent='❌ الرد: '+r.status;return}
+    if(type.indexOf('video')===-1&&type.indexOf('octet')===-1){span.className='w';span.textContent='⚠️ الملف موجود لكن نوعه غريب ('+type+'). غالبًا اترفع بشكل غلط.';return}
+    span.className='ok';span.textContent='✅ موجود ('+type+'). بيشغّله تحت:';
+    var v=document.createElement('video');v.src=abs;v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.controls=true;box.appendChild(v);
+    v.addEventListener('error',function(){var s=document.createElement('div');s.className='no';s.textContent='❌ الملف موجود لكن المتصفح مش قادر يشغّله. ممكن يكون اتلف أثناء الرفع، ارفعيه تاني.';box.appendChild(s)});
+  }).catch(function(){span.className='no';span.textContent='❌ تعذّر الفحص. لو بتفتحي الصفحة بدوبل كليك على الجهاز جرّبي الرابط بعد رفعها على GitHub.'});
+});
+</script>
+</body>
+</html>
