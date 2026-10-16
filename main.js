@@ -55,7 +55,7 @@
     e.preventDefault();
     html.classList.add('leaving');
     try { sessionStorage.setItem('mtiNav', '1'); } catch (err) { /* ignore */ }
-    window.setTimeout(() => { window.location.href = a.href; }, 450);
+    window.setTimeout(() => { window.location.href = a.href; }, 650);
   });
   window.addEventListener('pageshow', (e) => { if (e.persisted) html.classList.remove('leaving', 'entering', 'lift'); });
 
@@ -396,30 +396,29 @@
 
   if (!fine) return;
 
-  /* 3. Cursor spotlight + gentle 3D tilt on cards */
-  const cards = $$('.card, .pc, .pj, .oc, .stat, .svc, .fact');
-  cards.forEach((c) => {
-    c.classList.add('fx-card');
-    let raf = 0;
-    c.addEventListener('pointermove', (e) => {
-      const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        c.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
-        c.style.setProperty('--my', (y * 100).toFixed(1) + '%');
-        c.style.setProperty('--rx', ((0.5 - y) * 6).toFixed(2) + 'deg');
-        c.style.setProperty('--ry', ((x - 0.5) * 8).toFixed(2) + 'deg');
-      });
-    });
-    c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
-  });
+})();
 
-  /* 4. Magnetic buttons */
-  $$('.gbtn, .chip, .xb').forEach((b) => {
-    b.addEventListener('pointermove', (e) => {
-      const r = b.getBoundingClientRect();
-      b.style.translate = ((e.clientX - r.left - r.width / 2) * 0.18).toFixed(1) + 'px ' + ((e.clientY - r.top - r.height / 2) * 0.28).toFixed(1) + 'px';
-    });
-    b.addEventListener('pointerleave', () => { b.style.translate = ''; });
-  });
+/* ---- 3D tilt on cards (mouse only) ---- */
+(() => {
+  if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const SEL = '.card,.oc,.pc,.pj,.svc,.stat', MAX = 9;
+  let el = null, raf = 0, ev = null;
+  const apply = () => {
+    raf = 0; if (!el || !ev) return;
+    const r = el.getBoundingClientRect();
+    const x = (ev.clientX - r.left) / r.width - .5, y = (ev.clientY - r.top) / r.height - .5;
+    el.style.setProperty('--ry', (x * MAX * 2).toFixed(2) + 'deg');
+    el.style.setProperty('--rx', (-y * MAX * 2).toFixed(2) + 'deg');
+  };
+  document.addEventListener('pointermove', (e) => {
+    const t = e.target.closest && e.target.closest(SEL);
+    if (t !== el) {
+      if (el) el.classList.remove('tilt-on');
+      el = t;
+      if (el) el.classList.add('tilt-on');
+    }
+    ev = e;
+    if (el && !raf) raf = requestAnimationFrame(apply);
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => { if (el) el.classList.remove('tilt-on'); el = null; }, true);
 })();

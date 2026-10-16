@@ -653,10 +653,6 @@ img,video{backface-visibility:hidden}
 .pc:hover .im .sbg{transform:scale(1.08)}
 
 /* ---- Photos for previously empty places ---- */
-/* inner-page hero backdrop */
-.phero{isolation:isolate}
-.phero .pbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.55;filter:saturate(.85);pointer-events:none}
-.phero:before{z-index:0}
 /* theater service tiles: photo header */
 .svc .sph{position:relative;margin:-8px -6px 4px;height:160px;border-radius:22px;overflow:hidden}
 .svc .sph:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,20,.7),rgba(10,5,20,.05) 60%)}
@@ -715,10 +711,7 @@ html.js [data-reveal].is-in{filter:none}
 .lbx .art{background:#0a0514}
 .lbx .art img{width:100%;height:100%;object-fit:cover;display:block}
 
-/* inner-page hero: no white/pink glow band at the bottom, clean dark edge into the next section */
-.phero .fadew{display:none!important}
-.phero.bgT{background-image:none}
-.phero:after{content:"";position:absolute;inset-inline:0;bottom:0;height:45%;z-index:0;pointer-events:none;background:linear-gradient(to bottom,transparent,#0a0514 85%)}
+
 
 /* telescopic stands: photo changes with the open accordion item */
 .tpic .tbg{opacity:0;transform:scale(1.07);transition:opacity .9s ease,transform 1.4s cubic-bezier(.22,1,.36,1)}
@@ -783,3 +776,53 @@ html.js [data-reveal].is-in{filter:none}
 }
 @media (max-width:360px){.ftop{grid-template-columns:1fr}}
 @media (max-width:1000px){.nav .mmenu.open,.nav:not(.sc) .mmenu.open{background:rgba(14,12,34,.82)}}
+
+/* inner-page hero: photo behind the glow, white fade kept */
+.phero{isolation:isolate}
+.phero .pbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.5;filter:saturate(.85);pointer-events:none}
+.phero:before{z-index:0}
+
+.logo svg{height:32px;width:32px}
+.nav .logo svg{filter:none}
+@media (max-width:480px){.nav .logo svg{width:28px;height:28px}}
+
+/* ---- logo motion: ring gradient slowly orbits; intro draws ring -> gear -> name ---- */
+.logo .lr{transform-box:view-box;transform-origin:50% 50%;animation:lorbit 5s linear infinite}
+.logo .lgr{transform-box:view-box;transform-origin:50% 50%}
+@keyframes lorbit{to{transform:rotate(360deg)}}
+@keyframes ldraw{from{stroke-dasharray:1;stroke-dashoffset:1}to{stroke-dasharray:1;stroke-dashoffset:0}}
+@keyframes lpop{from{opacity:0;transform:scale(.4) rotate(-90deg)}to{opacity:1;transform:none}}
+@keyframes lfade{from{opacity:0}to{opacity:1}}
+@keyframes ltype{from{clip-path:inset(-2px 100% -2px 0)}to{clip-path:inset(-2px 0 -2px 0)}}
+html:not(.li-done) .nav .logo .lr{animation:ldraw 1s cubic-bezier(.65,0,.35,1) both,lorbit 5s linear 1s infinite}
+html:not(.li-done) .nav .logo .lgr{animation:lpop .7s cubic-bezier(.22,1,.36,1) .7s both}
+html:not(.li-done) .nav .logo .ld{animation:lfade .4s ease 1.3s both}
+html:not(.li-done) .nav .logo b{animation:ltype .7s steps(6,end) 1.2s both}
+@media (prefers-reduced-motion:reduce){.logo .lr,.logo .lgr,.logo .ld,.logo b{animation:none!important}}
+
+/* ---- logo: soft glow behind the mark (brand colours) + slight scale-up on hover ---- */
+.logo{position:relative;isolation:isolate}
+.logo::before{content:"";position:absolute;z-index:-1;top:50%;inset-inline-start:0;width:32px;height:32px;margin-top:-16px;border-radius:50%;background:linear-gradient(135deg,#2F6BFF,#8A5CFF 55%,#F06CFF);filter:blur(8px);opacity:0;transform:scale(.7);transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+.logo:hover::before{opacity:.45;transform:scale(1.1)}
+.logo svg,.nav .logo svg{transition:transform .35s cubic-bezier(.22,1,.36,1);filter:none}
+.logo:hover svg,.nav .logo:hover svg{transform:scale(1.08);filter:none}
+
+/* ---- 3D tilt cards (JS sets --rx/--ry and adds .tilt-on while the pointer is over a card) ---- */
+.card,.oc,.pc,.pj,.svc,.stat{transform-style:preserve-3d;will-change:transform}
+.tilt-on{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale3d(1.025,1.025,1.025)!important;transition:transform .12s linear,box-shadow .3s!important;box-shadow:0 22px 48px -18px rgba(26,11,84,.45)}
+@media (hover:none),(prefers-reduced-motion:reduce){.tilt-on{transform:none!important}}
+
+/* ---- page transition: curtain wipes up, the logo gear spins in the middle ---- */
+.curtain{opacity:1;transform:translateY(101%);transition:none;will-change:transform}
+.curtain i{display:none}
+.curtain .cg{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;opacity:0;transition:opacity .3s ease .2s}
+.curtain .cgg{transform-box:view-box;transform-origin:50% 50%;animation:cspin 1.6s linear infinite}
+.curtain .cgr{transform-box:view-box;transform-origin:50% 50%;animation:cspin 5s linear infinite reverse}
+@keyframes cspin{to{transform:rotate(360deg)}}
+html.leaving .curtain{opacity:1;transform:translateY(0);pointer-events:auto;transition:transform .6s cubic-bezier(.76,0,.24,1)}
+html.leaving .curtain .cg,html.entering .curtain .cg{opacity:1}
+html.entering .curtain{opacity:1;transform:translateY(0);transition:none}
+html.entering.lift .curtain{opacity:1;transform:translateY(-101%);transition:transform .75s cubic-bezier(.76,0,.24,1) .25s;pointer-events:none}
+html.entering .curtain .cg{transition:none}
+html.entering.lift .curtain .cg{opacity:0;transition:opacity .25s ease}
+@media (prefers-reduced-motion:reduce){.curtain{display:none}}
