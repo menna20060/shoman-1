@@ -26,13 +26,6 @@
     if (!nav) return;
     const y = Math.max(0, window.scrollY);
     nav.classList.toggle('sc', y > 20);
-    const menuOpen = !!document.querySelector('.mmenu.open');
-    const dy = y - lastY;
-    if (navWrap) {
-      if (y < 80 || menuOpen || dy < -4) navWrap.classList.remove('nav-hide');   /* scrolling up / near top */
-      else if (dy > 4) navWrap.classList.add('nav-hide');                         /* scrolling down */
-    }
-    if (Math.abs(dy) > 4) lastY = y;
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -150,6 +143,7 @@
           $('.ach', r).setAttribute('aria-expanded', String(on));
         });
         if (!wasOpen) {
+          $$('.tpic .tbg').forEach((im, k) => im.classList.toggle('on', k === i));
           if (lab) lab.textContent = labels[i] || '';
           if (step) step.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(labels.length).padStart(2, '0');
         }
@@ -203,9 +197,9 @@
       if (!m) return;
       $('#pn-e').textContent = D.pn.eyebrow;
       $('#pn-t').textContent = m.code;
-      const photo = $('.im .sph', card); const svg = photo ? null : $('.im svg', card);
+      const ph = $('.im .sbg', card);
       $('#pn-b').innerHTML =
-        '<div class="pimg">' + (photo ? photo.outerHTML : (svg ? svg.outerHTML : '')) + '</div>' +
+        '<div class="pimg">' + (ph ? '<img src="' + esc(ph.currentSrc || ph.src) + '" alt="" referrerpolicy="no-referrer">' : '') + '</div>' +
         '<p class="plead">' + esc(m.desc) + '</p>' +
         '<div class="spec">' + m.spec.map((r) => '<div><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span></div>').join('') + '</div>' +
         '<div class="pbtns"><a class="gbtn" href="' + D.pn.contactHref + '"><span>' + esc(D.pn.contact) + '</span></a><a class="obtn" href="' + D.pn.optionsHref + '">' + esc(D.pn.options) + '</a></div>';
@@ -217,16 +211,10 @@
       const i = Number(card.getAttribute('data-proj'));
       const p = D.projects[i];
       if (!p) return;
-      const projectImage = $('.seat img', card);
-      $('#lb-a').replaceChildren();
-      if (projectImage) {
-        const image = projectImage.cloneNode();
-        image.removeAttribute('loading');
-        image.alt = p.title;
-        $('#lb-a').appendChild(image);
-      } else {
-        $('#lb-a').innerHTML = D.scenes[D.sceneOf[card.getAttribute('data-sector')] || 0];
-      }
+      const ph = $('.seat img', card);
+      $('#lb-a').innerHTML = ph
+        ? '<img src="' + esc(ph.currentSrc || ph.src) + '" alt="' + esc(p.title) + '" referrerpolicy="no-referrer">'
+        : D.scenes[D.sceneOf[card.getAttribute('data-sector')] || 0];
       $('#lb-t').textContent = p.title;
       $('#lb-m').textContent = p.meta;
       openOv(lbx, '.xb');
@@ -357,4 +345,81 @@
     requestAnimationFrame(prog);
   };
   requestAnimationFrame(prog);
+})();
+
+/* =====================  Extra interactivity & motion  ===================== */
+(() => {
+  'use strict';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  if (reduced) return;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  /* 1. Hero parallax: video drifts + zooms, text rises and fades as you scroll */
+  const hero = $('.hero');
+  const hv = hero && $('video', hero);
+  const hc = hero && $('.hc', hero);
+  let ticking = false;
+  const parallax = () => {
+    ticking = false;
+    const y = window.scrollY;
+    if (hero && y < hero.offsetHeight + 200) {
+      const p = clamp(y / hero.offsetHeight, 0, 1);
+      if (hv) { hv.style.translate = '0 ' + (y * 0.25).toFixed(1) + 'px'; hv.style.scale = (1 + p * 0.12).toFixed(3); }
+      if (hc) { hc.style.translate = '0 ' + (y * 0.18).toFixed(1) + 'px'; hc.style.opacity = (1 - p * 1.25).toFixed(3); }
+    }
+  };
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(parallax); } }, { passive: true });
+  parallax();
+
+  /* 2. Count-up numbers when stats come into view */
+  const counters = $$('.stat b, .fact b').filter((el) => /\d/.test(el.textContent));
+  if (counters.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((ents) => ents.forEach((en) => {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      const el = en.target, txt = el.textContent.trim();
+      const m = txt.match(/^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/);
+      if (!m) return;
+      const end = parseFloat(m[2].replace(/,/g, '')), dec = (m[2].split('.')[1] || '').length, t0 = performance.now(), dur = 1600;
+      const step = (t) => {
+        const k = clamp((t - t0) / dur, 0, 1), e = 1 - Math.pow(1 - k, 4), v = end * e;
+        el.textContent = m[1] + (dec ? v.toFixed(dec) : Math.round(v).toLocaleString('en-US').replace(/,/g, m[2].includes(',') ? ',' : '')) + m[3];
+        if (k < 1) requestAnimationFrame(step); else el.textContent = txt;
+      };
+      requestAnimationFrame(step);
+    }), { threshold: 0.6 });
+    counters.forEach((c) => io.observe(c));
+  }
+
+  if (!fine) return;
+
+  /* 3. Cursor spotlight + gentle 3D tilt on cards */
+  const cards = $$('.card, .pc, .pj, .oc, .stat, .svc, .fact');
+  cards.forEach((c) => {
+    c.classList.add('fx-card');
+    let raf = 0;
+    c.addEventListener('pointermove', (e) => {
+      const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        c.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+        c.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        c.style.setProperty('--rx', ((0.5 - y) * 6).toFixed(2) + 'deg');
+        c.style.setProperty('--ry', ((x - 0.5) * 8).toFixed(2) + 'deg');
+      });
+    });
+    c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
+  });
+
+  /* 4. Magnetic buttons */
+  $$('.gbtn, .chip, .xb').forEach((b) => {
+    b.addEventListener('pointermove', (e) => {
+      const r = b.getBoundingClientRect();
+      b.style.translate = ((e.clientX - r.left - r.width / 2) * 0.18).toFixed(1) + 'px ' + ((e.clientY - r.top - r.height / 2) * 0.28).toFixed(1) + 'px';
+    });
+    b.addEventListener('pointerleave', () => { b.style.translate = ''; });
+  });
 })();

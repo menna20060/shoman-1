@@ -532,7 +532,6 @@ html.ov-open body{overflow:hidden}
 .lbx.on .box{opacity:1;transform:none}
 .lbx .art{aspect-ratio:16/9}
 .lbx .art svg{width:100%;height:100%;display:block}
-.lbx .art img{width:100%;height:100%;display:block;object-fit:cover}
 .lbx .mc{padding:18px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .lbx #lb-t{font-size:20px;font-weight:500}
 .lbx #lb-m{font-size:14px;color:var(--lav2);margin-top:4px}
@@ -608,51 +607,21 @@ img,video{backface-visibility:hidden}
   .nav .mmenu a:hover{background:rgba(255,255,255,.16)}
 }
 
-/* ---- Hide navbar on scroll down, show on scroll up ---- */
-.navwrap{transition:transform .5s cubic-bezier(.22,.61,.36,1);will-change:transform}
-.navwrap.nav-hide{transform:translateY(-120px);pointer-events:none}
-.navwrap:focus-within{transform:none;pointer-events:auto}
-@media (prefers-reduced-motion:reduce){.navwrap{transition:none}}
-
 /* ---- Language button: clearly visible pill ---- */
 .nav .lbtn{display:inline-flex;color:#fff;font-size:14px;font-weight:600;padding:0 14px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);border-radius:999px;white-space:nowrap;opacity:1;visibility:visible}
 .nav .lbtn:hover,.nav:not(.sc) .lbtn:hover,.nav.sc .lbtn:hover{background:rgba(255,255,255,.3);border-color:#fff}
 
-/* ---- Apple-style navbar: full-width, slim, frosted dark glass ---- */
-.navwrap{padding-inline:0}
-.navwrap .nav,.navwrap .nav.sc{--nav-color:rgba(245,245,247,.86);max-width:none;width:100%;margin-top:0;border-radius:0;border:0;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:none;background:rgba(22,22,23,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
-.nav .nrow,.lang-ar .nav .nrow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:44px;max-width:1024px;margin:0 auto;padding:0 22px;gap:16px}
-.nav .logo{justify-self:start;gap:7px}
-.nav .logo svg{height:20px;width:20px}
-.nav .logo b{font-size:17px;font-weight:600;letter-spacing:-.01em;color:#f5f5f7;text-shadow:none;text-transform:lowercase}
-.nav .nlinks,.nav.sc .nlinks{justify-self:center;gap:clamp(16px,3.2vw,44px)}
-.nav .nlinks a,.nav.sc .nlinks a{padding:0;font-size:12px;letter-spacing:-.01em;color:rgba(245,245,247,.8);text-shadow:none;border-radius:0;background:none;transition:color .25s}
-.nav .nlinks a:hover,.nav .nlinks a.on,.nav.sc .nlinks a:hover,.nav.sc .nlinks a.on,.nav:not(.sc) .nlinks a:hover,.nav:not(.sc) .nlinks a.on{background:none;color:#fff}
-.nav .nact{justify-self:end;gap:14px}
-.nav .lbtn,.nav .lbtn:hover,.nav.sc .lbtn:hover,.nav:not(.sc) .lbtn:hover{height:auto;min-width:0;padding:0;border:0;border-radius:0;background:none;font-size:12px;font-weight:400;color:rgba(245,245,247,.8);text-shadow:none;transition:color .25s}
-.nav .lbtn:hover{color:#fff}
-.nav .gbtn{padding:0;background:none;border-radius:980px}
-.nav .gbtn span{padding:4px 12px;font-size:12px;border-radius:980px;background:#0071e3;color:#fff}
-.nav .gbtn:hover span{background:#0077ed}
-.nav .burger{width:30px;height:30px;color:#f5f5f7;text-shadow:none}
-.nav .burger svg{width:18px;height:18px}
-@media (max-width:1000px){
-  .nav .nrow,.lang-ar .nav .nrow{grid-template-columns:1fr auto;padding:0 16px}
-  .nav .nlinks{display:none}
-  .nav .mmenu.open,.nav:not(.sc) .mmenu.open{background:rgba(22,22,23,.92);border-top:1px solid rgba(255,255,255,.1);border-radius:0;padding:8px 22px 20px}
-  .nav .mmenu a{font-size:17px;padding:12px 0;text-align:start;color:#f5f5f7;text-shadow:none;border-radius:0;border-bottom:1px solid rgba(255,255,255,.08)}
-  .nav .mmenu a:hover{background:none;color:#fff}
-  .nav .mmenu .gbtn{display:inline-flex;border:0;margin-top:14px;align-self:flex-start}
-  .nav .mmenu .gbtn span{font-size:15px;padding:8px 20px}
-}
-
-/* ---- Navbar slides up on scroll down, back on scroll up ---- */
-.navwrap.nav-hide{transform:translateY(-120px);pointer-events:none}
-
-/* ---- Contact button: original gradient-border pill, smaller to fit the slim bar ---- */
-.nav .gbtn{display:inline-flex;padding:1px;border-radius:999px;background-image:var(--grad-a)}
-.nav .gbtn span{padding:4px 14px;font-size:12px;line-height:1.4;border-radius:999px;background:var(--blue);color:#fff;transition:background .3s}
-.nav .gbtn:hover span{background:transparent}
+/* ---- Minimal fixed glass navbar (floating pill, always transparent, roomy) ---- */
+.nav,.nav.sc{--nav-color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 32px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.12);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);transition:max-width .5s ease-in-out,background .4s,box-shadow .4s}
+.nav.sc{background:rgba(12,10,40,.3);max-width:1000px}
+.nav .lbtn{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.08);font-weight:500}
+.nav .lbtn:hover,.nav:not(.sc) .lbtn:hover,.nav.sc .lbtn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5)}
+.nav .nlinks a,.nav .lbtn,.nav .logo b,.nav .burger{text-shadow:none}
+.nav .logo svg{filter:none}
+.nav .logo b{text-transform:lowercase}
+.nav .nlinks,.nav.sc .nlinks{gap:12px}
+.nav .nlinks a,.nav.sc .nlinks a{padding:8px 18px}
+.nav .nrow{gap:32px}
 
 /* ===== Photo slots (project cards, build cards, telescopic panel) ===== */
 .pj .seat{inset:0;height:100%;opacity:1;background:none;overflow:hidden;z-index:0}
@@ -675,11 +644,142 @@ img,video{backface-visibility:hidden}
 .hero .hc h1{font-size:clamp(30px,3.8vw,54px);text-wrap:balance}
 @media(max-width:700px){.lang-en .nw{white-space:normal}}
 
-/* seat photos */
-.pc .im .sph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .8s cubic-bezier(.22,1,.36,1)}
-.pc .im::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to top,rgba(10,5,20,.55) 0%,rgba(10,5,20,0) 55%)}
-.pc .im em{z-index:2;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6)}
-.pc .im svg{display:none}
-.pc:hover .im .sph{transform:scale(1.07)}
-.pimg{position:relative;overflow:hidden}
-.pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* Seat cards: photo behind the chair drawing */
+.pc .im{overflow:hidden}
+.pc .im .sbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(.8);transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.pc .im::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(160deg,rgba(26,11,84,.55),rgba(10,5,20,.8))}
+.pc .im svg,.pc .im em{position:relative;z-index:2}
+.pc .im em{position:absolute}
+.pc:hover .im .sbg{transform:scale(1.08)}
+
+/* ---- Photos for previously empty places ---- */
+/* inner-page hero backdrop */
+.phero{isolation:isolate}
+.phero .pbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.55;filter:saturate(.85);pointer-events:none}
+.phero:before{z-index:0}
+/* theater service tiles: photo header */
+.svc .sph{position:relative;margin:-8px -6px 4px;height:160px;border-radius:22px;overflow:hidden}
+.svc .sph:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,5,20,.7),rgba(10,5,20,.05) 60%)}
+.svc .sphi{width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.svc:hover .sphi{transform:scale(1.07)}
+/* about / options photo strips */
+.pphoto{padding-top:0}
+.pstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pstrip.two{grid-template-columns:repeat(2,1fr);margin-bottom:32px}
+.pstrip img{width:100%;height:clamp(200px,24vw,340px);object-fit:cover;border-radius:28px;display:block;box-shadow:0 3px 9px rgba(63,74,126,.08),0 10px 40px rgba(63,74,126,.14);transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.pstrip img:hover{transform:scale(1.02)}
+@media(max-width:700px){.pstrip,.pstrip.two{grid-template-columns:1fr}.pstrip img{height:200px}}
+
+/* =====================  Extra interactivity & motion  ===================== */
+html{scroll-behavior:auto}
+::selection{background:rgba(51,87,214,.35)}
+
+/* reveals: add a soft blur-in on top of the existing fade/slide */
+html.js [data-reveal]{filter:blur(8px);transition:opacity 1s cubic-bezier(.22,1,.36,1),transform 1s cubic-bezier(.22,1,.36,1),filter 1s cubic-bezier(.22,1,.36,1)}
+html.js [data-reveal].is-in{filter:none}
+
+/* cards: cursor spotlight + 3D tilt (uses independent `rotate`/`translate` so it never fights existing transforms) */
+.fx-card{--rx:0deg;--ry:0deg;position:relative;transition:transform .4s,box-shadow .4s,translate .35s cubic-bezier(.22,1,.36,1),rotate .35s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (pointer:fine){
+  .fx-card:hover{rotate:x var(--rx);}
+  .pc:hover .im svg,.pj:hover .seat{transform:scale(1.06)}
+  .pc .im svg,.pj .seat{transition:transform .8s cubic-bezier(.22,1,.36,1)}
+}
+
+/* buttons */
+.gbtn,.chip,.xb{transition:translate .3s cubic-bezier(.22,1,.36,1),transform .3s,box-shadow .3s}
+.gbtn:active,.chip:active{transform:scale(.96)}
+.gbtn span{transition:background .3s,transform .3s}
+
+/* nav links: animated underline */
+
+/* "learn more" arrows slide on hover */
+.cta a svg,.obtn svg{transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.cta a:hover svg,.obtn:hover svg{transform:translateX(5px)}
+.lang-ar .cta a:hover svg{transform:translateX(-5px)}
+
+/* ambient cursor glow */
+
+/* hero: slow ken-burns breathing + animated scroll hint */
+.hero video{will-change:translate,scale}
+.hero .hc{will-change:translate,opacity}
+
+@media (prefers-reduced-motion:reduce){html.js [data-reveal]{filter:none}}
+
+/* chair drawings removed: photo only */
+.pc .im .sbg{opacity:.95;filter:saturate(.95)}
+.pc .im::before{background:linear-gradient(to top,rgba(10,5,20,.55),rgba(10,5,20,0) 55%)}
+.pimg{overflow:hidden;background:#0a0514}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+/* project lightbox: photo instead of the theatre drawing */
+.lbx .art{background:#0a0514}
+.lbx .art img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* inner-page hero: no white/pink glow band at the bottom, clean dark edge into the next section */
+.phero .fadew{display:none!important}
+.phero.bgT{background-image:none}
+.phero:after{content:"";position:absolute;inset-inline:0;bottom:0;height:45%;z-index:0;pointer-events:none;background:linear-gradient(to bottom,transparent,#0a0514 85%)}
+
+/* telescopic stands: photo changes with the open accordion item */
+.tpic .tbg{opacity:0;transform:scale(1.07);transition:opacity .9s ease,transform 1.4s cubic-bezier(.22,1,.36,1)}
+.tpic .tbg.on{opacity:1;transform:scale(1)}
+.bgT{background-repeat:no-repeat}
+/* rounder navbar */
+.nav,.nav.sc{border-radius:32px}
+.nav .mmenu.open{border-radius:0 0 32px 32px}
+
+/* nav Contact button: same radius as the navbar */
+.nav .gbtn,.nav .gbtn span{border-radius:32px}
+
+/* =====================  Responsive polish  ===================== */
+/* navbar: tighter on mid-size screens so links never crowd */
+@media (max-width:1180px){
+  .nav .nlinks,.nav.sc .nlinks{gap:4px}
+  .nav .nlinks a,.nav.sc .nlinks a{padding:8px 12px}
+  .nav .nrow{gap:16px}
+}
+@media (max-width:1000px){
+  .navwrap{padding-inline:14px}
+  .nav,.nav.sc{border-radius:28px}
+  .nav .nrow,.lang-ar .nav .nrow{padding:6px 8px 6px 18px;gap:8px}
+  .lang-ar .nav .nrow{padding:6px 18px 6px 8px}
+  .nav .nact{gap:6px}
+  .nav .lbtn{height:36px;padding:0 14px}
+  .nav .burger{width:36px;height:36px;border-radius:50%}
+  /* open menu */
+  .nav .mmenu.open,.nav:not(.sc) .mmenu.open{padding:8px 12px 14px;gap:2px;border-radius:0 0 28px 28px}
+  .nav .mmenu a:not(.gbtn){padding:14px 16px;border-radius:18px;font-size:16px;text-align:start;display:block}
+  .nav .mmenu a.on{background:rgba(255,255,255,.14)}
+  .nav .mmenu .gbtn{display:flex;width:100%;margin-top:10px;padding:1px;border-radius:32px;align-self:stretch}
+  .nav .mmenu .gbtn span{display:block;width:100%;padding:13px 20px;font-size:15px;line-height:1.2;border-radius:32px;text-align:center}
+}
+@media (max-width:420px){
+  .navwrap{padding-inline:10px}
+  .nav .logo b{font-size:19px}
+  .nav .logo svg{width:24px;height:24px}
+  .nav .lbtn{padding:0 12px;font-size:13px}
+}
+
+/* hero + inner heroes on phones */
+@media (max-width:700px){
+  .hero{min-height:max(620px,100svh)}
+  .phero{padding:140px 16px 80px}
+  .phero h1{font-size:clamp(30px,9vw,44px)}
+}
+
+/* footer */
+@media (max-width:1000px){
+  .ftop{grid-template-columns:1fr 1fr;gap:36px 28px}
+  .ftop>div:first-child{grid-column:1/-1}
+}
+@media (max-width:640px){
+  .foot{padding:56px 20px 28px}
+  .ftop{grid-template-columns:1fr 1fr;gap:32px 20px}
+  .ftop>div:first-child,.ftop>div:last-child{grid-column:1/-1}
+  .foot h4{margin-bottom:12px}
+  .foot li{margin-bottom:9px}
+  .fbot{margin-top:40px;flex-direction:column;align-items:flex-start;gap:14px}
+  .fbot a{margin-inline-start:0;margin-inline-end:20px}
+}
+@media (max-width:360px){.ftop{grid-template-columns:1fr}}
+@media (max-width:1000px){.nav .mmenu.open,.nav:not(.sc) .mmenu.open{background:rgba(14,12,34,.82)}}
